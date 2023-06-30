@@ -99,10 +99,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_assignment_list_tui_OBJECTS = main.$(OBJEXT) entry.$(OBJEXT) \
-	group.$(OBJEXT)
+am_assignment_list_tui_OBJECTS = assignment_list_tui-main.$(OBJEXT) \
+	assignment_list_tui-draw.$(OBJEXT) \
+	assignment_list_tui-entry.$(OBJEXT) \
+	assignment_list_tui-group.$(OBJEXT)
 assignment_list_tui_OBJECTS = $(am_assignment_list_tui_OBJECTS)
-assignment_list_tui_LDADD = $(LDADD)
+assignment_list_tui_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -118,9 +120,15 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/entry.Po ./$(DEPDIR)/group.Po \
-	./$(DEPDIR)/main.Po
+am__depfiles_remade = ./$(DEPDIR)/assignment_list_tui-draw.Po \
+	./$(DEPDIR)/assignment_list_tui-entry.Po \
+	./$(DEPDIR)/assignment_list_tui-group.Po \
+	./$(DEPDIR)/assignment_list_tui-main.Po
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
@@ -172,6 +180,8 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
 CTAGS = @CTAGS@
+CURSES_CFLAGS = @CURSES_CFLAGS@
+CURSES_LIBS = @CURSES_LIBS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -200,6 +210,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -247,7 +260,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-assignment_list_tui_SOURCES = main.c entry.c entry.h group.c group.h
+assignment_list_tui_SOURCES = main.c draw.c draw.h entry.c entry.h group.c group.h
+assignment_list_tui_LDADD = @CURSES_LIBS@
+assignment_list_tui_CPPFLAGS = @CURSES_CFLAGS@
 all: all-am
 
 .SUFFIXES:
@@ -334,9 +349,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entry.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/group.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-draw.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-entry.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-group.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-main.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -357,6 +373,62 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+assignment_list_tui-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-main.o -MD -MP -MF $(DEPDIR)/assignment_list_tui-main.Tpo -c -o assignment_list_tui-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-main.Tpo $(DEPDIR)/assignment_list_tui-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='assignment_list_tui-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+assignment_list_tui-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-main.obj -MD -MP -MF $(DEPDIR)/assignment_list_tui-main.Tpo -c -o assignment_list_tui-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-main.Tpo $(DEPDIR)/assignment_list_tui-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='assignment_list_tui-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+assignment_list_tui-draw.o: draw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-draw.o -MD -MP -MF $(DEPDIR)/assignment_list_tui-draw.Tpo -c -o assignment_list_tui-draw.o `test -f 'draw.c' || echo '$(srcdir)/'`draw.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-draw.Tpo $(DEPDIR)/assignment_list_tui-draw.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='draw.c' object='assignment_list_tui-draw.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-draw.o `test -f 'draw.c' || echo '$(srcdir)/'`draw.c
+
+assignment_list_tui-draw.obj: draw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-draw.obj -MD -MP -MF $(DEPDIR)/assignment_list_tui-draw.Tpo -c -o assignment_list_tui-draw.obj `if test -f 'draw.c'; then $(CYGPATH_W) 'draw.c'; else $(CYGPATH_W) '$(srcdir)/draw.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-draw.Tpo $(DEPDIR)/assignment_list_tui-draw.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='draw.c' object='assignment_list_tui-draw.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-draw.obj `if test -f 'draw.c'; then $(CYGPATH_W) 'draw.c'; else $(CYGPATH_W) '$(srcdir)/draw.c'; fi`
+
+assignment_list_tui-entry.o: entry.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-entry.o -MD -MP -MF $(DEPDIR)/assignment_list_tui-entry.Tpo -c -o assignment_list_tui-entry.o `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-entry.Tpo $(DEPDIR)/assignment_list_tui-entry.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry.c' object='assignment_list_tui-entry.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-entry.o `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
+
+assignment_list_tui-entry.obj: entry.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-entry.obj -MD -MP -MF $(DEPDIR)/assignment_list_tui-entry.Tpo -c -o assignment_list_tui-entry.obj `if test -f 'entry.c'; then $(CYGPATH_W) 'entry.c'; else $(CYGPATH_W) '$(srcdir)/entry.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-entry.Tpo $(DEPDIR)/assignment_list_tui-entry.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry.c' object='assignment_list_tui-entry.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-entry.obj `if test -f 'entry.c'; then $(CYGPATH_W) 'entry.c'; else $(CYGPATH_W) '$(srcdir)/entry.c'; fi`
+
+assignment_list_tui-group.o: group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-group.o -MD -MP -MF $(DEPDIR)/assignment_list_tui-group.Tpo -c -o assignment_list_tui-group.o `test -f 'group.c' || echo '$(srcdir)/'`group.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-group.Tpo $(DEPDIR)/assignment_list_tui-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='group.c' object='assignment_list_tui-group.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-group.o `test -f 'group.c' || echo '$(srcdir)/'`group.c
+
+assignment_list_tui-group.obj: group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assignment_list_tui-group.obj -MD -MP -MF $(DEPDIR)/assignment_list_tui-group.Tpo -c -o assignment_list_tui-group.obj `if test -f 'group.c'; then $(CYGPATH_W) 'group.c'; else $(CYGPATH_W) '$(srcdir)/group.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/assignment_list_tui-group.Tpo $(DEPDIR)/assignment_list_tui-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='group.c' object='assignment_list_tui-group.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-group.obj `if test -f 'group.c'; then $(CYGPATH_W) 'group.c'; else $(CYGPATH_W) '$(srcdir)/group.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -484,9 +556,10 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/entry.Po
-	-rm -f ./$(DEPDIR)/group.Po
-	-rm -f ./$(DEPDIR)/main.Po
+		-rm -f ./$(DEPDIR)/assignment_list_tui-draw.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-entry.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-group.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-main.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -532,9 +605,10 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/entry.Po
-	-rm -f ./$(DEPDIR)/group.Po
-	-rm -f ./$(DEPDIR)/main.Po
+		-rm -f ./$(DEPDIR)/assignment_list_tui-draw.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-entry.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-group.Po
+	-rm -f ./$(DEPDIR)/assignment_list_tui-main.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

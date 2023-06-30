@@ -9,10 +9,15 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 
 # Checks for libraries.
+AX_WITH_CURSES
+if test "x$ax_cv_curses" != xyes; then
+	AC_MSG_ERROR([requires an X/Open-compatible Curses library])
+fi
 
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 

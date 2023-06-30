@@ -1,3 +1,6 @@
+#ifndef ENTRY_H
+#define ENTRY_H
+
 #include "../config.h"
 
 // a group/category for entries to be put in
@@ -23,3 +26,5 @@ void entry_set_title(Entry *e, char *title);
 void entry_set_color(Entry *e, char *color);
 void entry_set_highlight(Entry *e, char *highlight);
 void entry_set_url(Entry *e, char *url);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef GROUP_H
+#define GROUP_H
+
 #include "../config.h"
 
 // a group/category for entries to be put in
@@ -17,3 +20,5 @@ char *group_get_url(Group *g);
 void group_set_name(Group *g, char *name);
 void group_set_desc(Group *g, char *desc);
 void group_set_url(Group *g, char *url);
+
+#endif
