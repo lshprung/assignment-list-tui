@@ -652,6 +652,10 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+default_db
+SQLITE3_VERSION
+SQLITE3_LDFLAGS
+SQLITE3_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
@@ -750,6 +754,7 @@ enable_silent_rules
 enable_dependency_tracking
 with_ncurses
 with_ncursesw
+with_sqlite3
 enable_custom_bufsize
 '
       ac_precious_vars='build_alias
@@ -1402,6 +1407,8 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-ncurses          force the use of Ncurses or NcursesW
   --without-ncursesw      do not use NcursesW (wide character support)
+  --with-sqlite3=[ARG]    use SQLite 3 library [default=yes], optionally
+                          specify the prefix for sqlite3 library
 
 Some influential environment variables:
   CC          C compiler command
@@ -1587,6 +1594,39 @@ fi
 
 } # ac_fn_c_try_link
 
+# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
+# Tests whether HEADER exists and can be compiled using the include files in
+# INCLUDES, setting the cache variable VAR accordingly.
+ac_fn_c_check_header_compile ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+printf %s "checking for $2... " >&6; }
+if eval test \${$3+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+#include <$2>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  eval "$3=yes"
+else $as_nop
+  eval "$3=no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+eval ac_res=\$$3
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+printf "%s\n" "$ac_res" >&6; }
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_c_check_header_compile
+
 # ac_fn_c_check_type LINENO TYPE VAR INCLUDES
 # -------------------------------------------
 # Tests whether TYPE exists after having included INCLUDES, setting cache
@@ -1643,39 +1683,6 @@ printf "%s\n" "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
 } # ac_fn_c_check_type
-
-# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
-# -------------------------------------------------------
-# Tests whether HEADER exists and can be compiled using the include files in
-# INCLUDES, setting the cache variable VAR accordingly.
-ac_fn_c_check_header_compile ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-printf %s "checking for $2... " >&6; }
-if eval test \${$3+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-#include <$2>
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  eval "$3=yes"
-else $as_nop
-  eval "$3=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-eval ac_res=\$$3
-	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-printf "%s\n" "$ac_res" >&6; }
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-
-} # ac_fn_c_check_header_compile
 ac_configure_args_raw=
 for ac_arg
 do
@@ -5543,9 +5550,154 @@ if test "x$ax_cv_curses" != xyes; then
 	as_fn_error $? "requires an X/Open-compatible Curses library" "$LINENO" 5
 fi
 
-# Checks for header files.
 
-# Checks for typedefs, structures, and compiler characteristics.
+
+# Check whether --with-sqlite3 was given.
+if test ${with_sqlite3+y}
+then :
+  withval=$with_sqlite3;
+        if test "$withval" = "no"; then
+            WANT_SQLITE3="no"
+        elif test "$withval" = "yes"; then
+            WANT_SQLITE3="yes"
+            ac_sqlite3_path=""
+        else
+            WANT_SQLITE3="yes"
+            ac_sqlite3_path="$withval"
+        fi
+
+else $as_nop
+  WANT_SQLITE3="yes"
+
+fi
+
+
+    SQLITE3_CFLAGS=""
+    SQLITE3_LDFLAGS=""
+    SQLITE3_VERSION=""
+
+    if test "x$WANT_SQLITE3" = "xyes"; then
+
+        ac_sqlite3_header="sqlite3.h"
+
+        sqlite3_version_req=3.0.0
+        sqlite3_version_req_shorten=`expr $sqlite3_version_req : '\([0-9]*\.[0-9]*\)'`
+        sqlite3_version_req_major=`expr $sqlite3_version_req : '\([0-9]*\)'`
+        sqlite3_version_req_minor=`expr $sqlite3_version_req : '[0-9]*\.\([0-9]*\)'`
+        sqlite3_version_req_micro=`expr $sqlite3_version_req : '[0-9]*\.[0-9]*\.\([0-9]*\)'`
+        if test "x$sqlite3_version_req_micro" = "x" ; then
+            sqlite3_version_req_micro="0"
+        fi
+
+        sqlite3_version_req_number=`expr $sqlite3_version_req_major \* 1000000 \
+                                   \+ $sqlite3_version_req_minor \* 1000 \
+                                   \+ $sqlite3_version_req_micro`
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SQLite3 library >= $sqlite3_version_req" >&5
+printf %s "checking for SQLite3 library >= $sqlite3_version_req... " >&6; }
+
+        if test "x$ac_sqlite3_path" != "x"; then
+            ac_sqlite3_ldflags="-L$ac_sqlite3_path/lib"
+            ac_sqlite3_cppflags="-I$ac_sqlite3_path/include"
+        else
+            for ac_sqlite3_path_tmp in /usr /usr/local /opt ; do
+                if test -f "$ac_sqlite3_path_tmp/include/$ac_sqlite3_header" \
+                    && test -r "$ac_sqlite3_path_tmp/include/$ac_sqlite3_header"; then
+                    ac_sqlite3_path=$ac_sqlite3_path_tmp
+                    ac_sqlite3_cppflags="-I$ac_sqlite3_path_tmp/include"
+                    ac_sqlite3_ldflags="-L$ac_sqlite3_path_tmp/lib"
+                    break;
+                fi
+            done
+        fi
+
+        ac_sqlite3_ldflags="$ac_sqlite3_ldflags -lsqlite3"
+
+        saved_CPPFLAGS="$CPPFLAGS"
+        CPPFLAGS="$CPPFLAGS $ac_sqlite3_cppflags"
+
+        ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+            #include <sqlite3.h>
+int
+main (void)
+{
+
+#if (SQLITE_VERSION_NUMBER >= $sqlite3_version_req_number)
+/* Everything is okay */
+#else
+#  error SQLite version is too old
+#endif
+
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+            success="yes"
+
+else $as_nop
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
+printf "%s\n" "not found" >&6; }
+            success="no"
+
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+        ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+        CPPFLAGS="$saved_CPPFLAGS"
+
+        if test "$success" = "yes"; then
+
+            SQLITE3_CFLAGS="$ac_sqlite3_cppflags"
+            SQLITE3_LDFLAGS="$ac_sqlite3_ldflags"
+
+            ac_sqlite3_header_path="$ac_sqlite3_path/include/$ac_sqlite3_header"
+
+                        if test "x$ac_sqlite3_header_path" != "x"; then
+                ac_sqlite3_version=`cat $ac_sqlite3_header_path \
+                    | grep '#define.*SQLITE_VERSION.*\"' | sed -e 's/.* "//' \
+                        | sed -e 's/"//'`
+                if test "x$ac_sqlite3_version" != "x"; then
+                    SQLITE3_VERSION=$ac_sqlite3_version
+                else
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Cannot find SQLITE_VERSION macro in sqlite3.h header to retrieve SQLite version!" >&5
+printf "%s\n" "$as_me: WARNING: Cannot find SQLITE_VERSION macro in sqlite3.h header to retrieve SQLite version!" >&2;}
+                fi
+            fi
+
+
+
+
+
+printf "%s\n" "#define HAVE_SQLITE3 /**/" >>confdefs.h
+
+        fi
+    fi
+
+# TODO consider erroring out if sqlite3 does not exist
+
+# Checks for header files.
 ac_header= ac_cache=
 for ac_item in $ac_header_c_list
 do
@@ -5575,6 +5727,15 @@ then :
 printf "%s\n" "#define STDC_HEADERS 1" >>confdefs.h
 
 fi
+ac_fn_c_check_header_compile "$LINENO" "unistd.h" "ac_cv_header_unistd_h" "$ac_includes_default"
+if test "x$ac_cv_header_unistd_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_UNISTD_H 1" >>confdefs.h
+
+fi
+
+
+# Checks for typedefs, structures, and compiler characteristics.
 ac_fn_c_check_type "$LINENO" "_Bool" "ac_cv_type__Bool" "$ac_includes_default"
 if test "x$ac_cv_type__Bool" = xyes
 then :
@@ -5713,6 +5874,7 @@ printf "%s\n" "$ac_cv_header_stdbool_h" >&6; }
 
 
 # Checks for library functions.
+#AC_CHECK_FUNCS([mkdir])
 
 # Setting default buffer size
 bufsize=1024
@@ -5723,7 +5885,25 @@ then :
 fi
 
 
-printf "%s\n" "#define BUF_LEN 1024" >>confdefs.h
+printf "%s\n" "#define BUF_LEN ${bufsize}" >>confdefs.h
+
+
+# Setting default user data dir and file name
+default_user_data_dir="$HOME/.local/share/${PACKAGE_NAME}"
+
+printf "%s\n" "#define USER_DATA_DIR \"${default_user_data_dir}\"" >>confdefs.h
+
+default_user_data_path="${default_user_data_dir}/data.db"
+
+printf "%s\n" "#define USER_DATA_PATH \"${default_user_data_path}\"" >>confdefs.h
+
+
+# Setting default db to use
+default_db="sqlite3"
+
+printf "%s\n" "#define DB \"${default_db}\"" >>confdefs.h
+
+default_db=${default_db}
 
 
 ac_config_files="$ac_config_files Makefile src/Makefile"
@@ -7182,4 +7362,17 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 printf "%s\n" "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+# Print helpful message
+cat << EOF
+
+** Configuration summary for ${PACKAGE_NAME} ${PACKAGE_VERSION}
+
+               Prefix: ${prefix}
+             Compiler: ${CC} ${CFLAGS} ${CPPFLAGS}
+            Libraries: ${LIBS}
+          Buffer Size: ${bufsize}
+Default User Data Dir: ${default_user_data_dir}
+             Database: ${default_db}
+EOF
 

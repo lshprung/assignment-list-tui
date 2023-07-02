@@ -99,10 +99,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__dirstamp = $(am__leading_dot)dirstamp
 am_assignment_list_tui_OBJECTS = assignment_list_tui-main.$(OBJEXT) \
 	assignment_list_tui-draw.$(OBJEXT) \
 	assignment_list_tui-entry.$(OBJEXT) \
-	assignment_list_tui-group.$(OBJEXT)
+	assignment_list_tui-group.$(OBJEXT) \
+	db/$(default_db)/assignment_list_tui-db.$(OBJEXT)
 assignment_list_tui_OBJECTS = $(am_assignment_list_tui_OBJECTS)
 assignment_list_tui_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -123,7 +125,8 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/assignment_list_tui-draw.Po \
 	./$(DEPDIR)/assignment_list_tui-entry.Po \
 	./$(DEPDIR)/assignment_list_tui-group.Po \
-	./$(DEPDIR)/assignment_list_tui-main.Po
+	./$(DEPDIR)/assignment_list_tui-main.Po \
+	db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -215,6 +218,9 @@ PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE3_CFLAGS = @SQLITE3_CFLAGS@
+SQLITE3_LDFLAGS = @SQLITE3_LDFLAGS@
+SQLITE3_VERSION = @SQLITE3_VERSION@
 STRIP = @STRIP@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -232,6 +238,7 @@ build_alias = @build_alias@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
+default_db = @default_db@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
@@ -260,9 +267,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-assignment_list_tui_SOURCES = main.c draw.c draw.h entry.c entry.h group.c group.h
-assignment_list_tui_LDADD = @CURSES_LIBS@
-assignment_list_tui_CPPFLAGS = @CURSES_CFLAGS@
+AUTOMAKE_OPTIONS = subdir-objects
+assignment_list_tui_SOURCES = main.c draw.c draw.h entry.c entry.h group.c group.h db/$(default_db)/db.c db/$(default_db)/db.h
+assignment_list_tui_LDADD = @CURSES_LIBS@ @SQLITE3_LDFLAGS@
+assignment_list_tui_CPPFLAGS = @CURSES_CFLAGS@ @SQLITE3_CFLAGS@ -Idb/$(default_db)
 all: all-am
 
 .SUFFIXES:
@@ -338,6 +346,15 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+db/$(default_db)/$(am__dirstamp):
+	@$(MKDIR_P) db/$(default_db)
+	@: > db/$(default_db)/$(am__dirstamp)
+db/$(default_db)/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) db/$(default_db)/$(DEPDIR)
+	@: > db/$(default_db)/$(DEPDIR)/$(am__dirstamp)
+db/$(default_db)/assignment_list_tui-db.$(OBJEXT):  \
+	db/$(default_db)/$(am__dirstamp) \
+	db/$(default_db)/$(DEPDIR)/$(am__dirstamp)
 
 assignment-list-tui$(EXEEXT): $(assignment_list_tui_OBJECTS) $(assignment_list_tui_DEPENDENCIES) $(EXTRA_assignment_list_tui_DEPENDENCIES) 
 	@rm -f assignment-list-tui$(EXEEXT)
@@ -345,6 +362,7 @@ assignment-list-tui$(EXEEXT): $(assignment_list_tui_OBJECTS) $(assignment_list_t
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f db/$(default_db)/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -353,6 +371,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-entry.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-group.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assignment_list_tui-main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -361,15 +380,17 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
@@ -429,6 +450,20 @@ assignment_list_tui-group.obj: group.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='group.c' object='assignment_list_tui-group.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assignment_list_tui-group.obj `if test -f 'group.c'; then $(CYGPATH_W) 'group.c'; else $(CYGPATH_W) '$(srcdir)/group.c'; fi`
+
+db/$(default_db)/assignment_list_tui-db.o: db/$(default_db)/db.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT db/$(default_db)/assignment_list_tui-db.o -MD -MP -MF db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Tpo -c -o db/$(default_db)/assignment_list_tui-db.o `test -f 'db/$(default_db)/db.c' || echo '$(srcdir)/'`db/$(default_db)/db.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Tpo db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='db/$(default_db)/db.c' object='db/$(default_db)/assignment_list_tui-db.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o db/$(default_db)/assignment_list_tui-db.o `test -f 'db/$(default_db)/db.c' || echo '$(srcdir)/'`db/$(default_db)/db.c
+
+db/$(default_db)/assignment_list_tui-db.obj: db/$(default_db)/db.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT db/$(default_db)/assignment_list_tui-db.obj -MD -MP -MF db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Tpo -c -o db/$(default_db)/assignment_list_tui-db.obj `if test -f 'db/$(default_db)/db.c'; then $(CYGPATH_W) 'db/$(default_db)/db.c'; else $(CYGPATH_W) '$(srcdir)/db/$(default_db)/db.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Tpo db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='db/$(default_db)/db.c' object='db/$(default_db)/assignment_list_tui-db.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(assignment_list_tui_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o db/$(default_db)/assignment_list_tui-db.obj `if test -f 'db/$(default_db)/db.c'; then $(CYGPATH_W) 'db/$(default_db)/db.c'; else $(CYGPATH_W) '$(srcdir)/db/$(default_db)/db.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -547,6 +582,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f db/$(default_db)/$(DEPDIR)/$(am__dirstamp)
+	-rm -f db/$(default_db)/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -560,6 +597,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/assignment_list_tui-entry.Po
 	-rm -f ./$(DEPDIR)/assignment_list_tui-group.Po
 	-rm -f ./$(DEPDIR)/assignment_list_tui-main.Po
+	-rm -f db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -609,6 +647,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/assignment_list_tui-entry.Po
 	-rm -f ./$(DEPDIR)/assignment_list_tui-group.Po
 	-rm -f ./$(DEPDIR)/assignment_list_tui-main.Po
+	-rm -f db/$(default_db)/$(DEPDIR)/assignment_list_tui-db.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

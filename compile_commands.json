@@ -1,1 +1,102 @@
-[]
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-DHAVE_CONFIG_H",
+      "-I.",
+      "-I..",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Idb/sqlite3",
+      "-g",
+      "-O2",
+      "-c",
+      "-o",
+      "assignment_list_tui-main.o",
+      "main.c"
+    ],
+    "directory": "/home/louie/Documents/code/assignment-list-tui/src",
+    "file": "/home/louie/Documents/code/assignment-list-tui/src/main.c",
+    "output": "/home/louie/Documents/code/assignment-list-tui/src/assignment_list_tui-main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-DHAVE_CONFIG_H",
+      "-I.",
+      "-I..",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Idb/sqlite3",
+      "-g",
+      "-O2",
+      "-c",
+      "-o",
+      "assignment_list_tui-draw.o",
+      "draw.c"
+    ],
+    "directory": "/home/louie/Documents/code/assignment-list-tui/src",
+    "file": "/home/louie/Documents/code/assignment-list-tui/src/draw.c",
+    "output": "/home/louie/Documents/code/assignment-list-tui/src/assignment_list_tui-draw.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-DHAVE_CONFIG_H",
+      "-I.",
+      "-I..",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Idb/sqlite3",
+      "-g",
+      "-O2",
+      "-c",
+      "-o",
+      "assignment_list_tui-entry.o",
+      "entry.c"
+    ],
+    "directory": "/home/louie/Documents/code/assignment-list-tui/src",
+    "file": "/home/louie/Documents/code/assignment-list-tui/src/entry.c",
+    "output": "/home/louie/Documents/code/assignment-list-tui/src/assignment_list_tui-entry.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-DHAVE_CONFIG_H",
+      "-I.",
+      "-I..",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Idb/sqlite3",
+      "-g",
+      "-O2",
+      "-c",
+      "-o",
+      "assignment_list_tui-group.o",
+      "group.c"
+    ],
+    "directory": "/home/louie/Documents/code/assignment-list-tui/src",
+    "file": "/home/louie/Documents/code/assignment-list-tui/src/group.c",
+    "output": "/home/louie/Documents/code/assignment-list-tui/src/assignment_list_tui-group.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-DHAVE_CONFIG_H",
+      "-I.",
+      "-I..",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Idb/sqlite3",
+      "-g",
+      "-O2",
+      "-c",
+      "-o",
+      "db/sqlite3/assignment_list_tui-db.o",
+      "db/sqlite3/db.c"
+    ],
+    "directory": "/home/louie/Documents/code/assignment-list-tui/src",
+    "file": "/home/louie/Documents/code/assignment-list-tui/src/db/sqlite3/db.c",
+    "output": "/home/louie/Documents/code/assignment-list-tui/src/db/sqlite3/assignment_list_tui-db.o"
+  }
+]

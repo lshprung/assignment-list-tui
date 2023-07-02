@@ -19,6 +19,10 @@ char *entry_get_highlight(Entry *e) {
 	return e->highlight;
 }
 
+bool entry_get_done(Entry *e) {
+	return e->done;
+}
+
 char *entry_get_url(Entry *e) {
 	return e->url;
 }
@@ -39,6 +43,10 @@ void entry_set_color(Entry *e, char *color) {
 
 void entry_set_highlight(Entry *e, char *highlight) {
 	strcpy(e->highlight, highlight);
+}
+
+void entry_set_done(Entry *e, bool done) {
+	e->done = done;
 }
 
 void entry_set_url(Entry *e, char *url) {

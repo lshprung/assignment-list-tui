@@ -3,6 +3,9 @@
 /* "Buffer Size" */
 #undef BUF_LEN
 
+/* "Default Database to use" */
+#undef DB
+
 /* Define to 1 if a SysV or X/Open compatible Curses library is present */
 #undef HAVE_CURSES
 
@@ -38,6 +41,9 @@
 
 /* Define to 1 if <ncurses.h> is present */
 #undef HAVE_NCURSES_H
+
+/* Have the SQLITE3 library */
+#undef HAVE_SQLITE3
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -91,6 +97,12 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
+
+/* "User Data Directory" */
+#undef USER_DATA_DIR
+
+/* "User Data Path" */
+#undef USER_DATA_PATH
 
 /* Version number of package */
 #undef VERSION
