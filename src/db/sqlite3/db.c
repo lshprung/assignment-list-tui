@@ -32,6 +32,14 @@ int db_init() {
 	return 0;
 }
 
+Group *db_load_groups() {
+	// TODO
+}
+
+Entry *db_load_entries() {
+	// TODO
+}
+
 int create_tables(const char *path) {
 	sqlite3 *db;
 	char queries[2][BUF_LEN]; 
