@@ -3,6 +3,10 @@
 #include "entry.h"
 
 // getters
+struct tm entry_get_due_date(Entry *e) {
+	return e->due_date;
+}
+
 char *entry_get_alt_due_date(Entry *e) {
 	return e->alt_due_date;
 }
@@ -29,6 +33,10 @@ char *entry_get_url(Entry *e) {
 
 
 // setters
+void entry_set_due_date(Entry *e, struct tm due_date) {
+	e->due_date = due_date;
+}
+
 void entry_set_alt_due_date(Entry *e, char *alt_due_date) {
 	strcpy(e->alt_due_date, alt_due_date);
 }

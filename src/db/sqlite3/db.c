@@ -52,7 +52,7 @@ int create_tables(const char *path) {
 			"CREATE TABLE IF NOT EXISTS 'Entry' ("
 			"'ID' int NOT NULL PRIMARY KEY, "
 			"'Group_ID' int NOT NULL, " // FIXME might want foreign key constraint
-			// TODO add due_date here once it's figure out
+			"'Due_date' date DEFAULT NULL, "
 			"'Alt_due_date' varchar(%d) DEFAULT NULL, "
 			"'Title' varchar(%d) NOT NULL, "
 			"'Color' varchar(%d) DEFAULT NULL, "

@@ -2,12 +2,13 @@
 #define ENTRY_H
 
 #include <stdbool.h>
+#include <time.h>
 
 #include "../config.h"
 
 // a group/category for entries to be put in
 typedef struct {
-	//TODO due_date
+	struct tm due_date;
 	char alt_due_date[BUF_LEN];
 	char title[BUF_LEN];
 	char color[BUF_LEN]; // TODO consider making an enum
@@ -17,6 +18,7 @@ typedef struct {
 } Entry;
 
 // getters
+struct tm entry_get_due_date(Entry *e);
 char *entry_get_alt_due_date(Entry *e);
 char *entry_get_title(Entry *e);
 char *entry_get_color(Entry *e);
@@ -25,6 +27,7 @@ bool entry_get_done(Entry *e);
 char *entry_get_url(Entry *e);
 
 // setters
+void entry_set_due_date(Entry *e, struct tm due_date);
 void entry_set_alt_due_date(Entry *e, char *alt_due_date);
 void entry_set_title(Entry *e, char *title);
 void entry_set_color(Entry *e, char *color);
