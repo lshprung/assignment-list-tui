@@ -40,6 +40,7 @@ int create_tables(const char *path) {
 	int res;
 	int i;
 
+	// Group table - stores groups of entries
 	sprintf(queries[0], 
 			"CREATE TABLE IF NOT EXISTS 'Group' ("
 			"'ID' int NOT NULL PRIMARY KEY, "
@@ -48,6 +49,7 @@ int create_tables(const char *path) {
 			"'Url' varchar(%d) DEFAULT NULL);",
 			BUF_LEN, BUF_LEN, BUF_LEN);
 
+	// Entry table - stores individual entries
 	sprintf(queries[1],
 			"CREATE TABLE IF NOT EXISTS 'Entry' ("
 			"'ID' int NOT NULL PRIMARY KEY, "
