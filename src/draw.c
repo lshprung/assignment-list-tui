@@ -24,8 +24,6 @@ void tui_init(Group **groups, Entry **entries) {
 	wrefresh(w_main);
 
 	// draw groups and entries
-	fprintf(stderr, "groups: %d\n", sizeof(*groups) / sizeof(Group));
-	fprintf(stderr, "entries: %d\n", sizeof(*entries) / sizeof(Entry));
 
 	input = getch();
 	tui_end();

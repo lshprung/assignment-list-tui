@@ -171,14 +171,14 @@ int create_tables(const char *path) {
 // callback functions
 int group_count_callback(void *first_arg, int argc, char **argv, char **azColName) {
 	Group **groups = (Group **) first_arg;
-	*groups = malloc(sizeof(Group) * argc);
+	*groups = malloc(sizeof(Group) * atoi(argv[0]));
 
 	return 0;
 }
 
 int entry_count_callback(void *first_arg, int argc, char **argv, char **azColName) {
 	Entry **entries = (Entry **) first_arg;
-	*entries = malloc(sizeof(Entry) * argc);
+	*entries = malloc(sizeof(Entry) * atoi(argv[0]));
 
 	return 0;
 }
