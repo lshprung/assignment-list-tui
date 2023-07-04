@@ -7,13 +7,27 @@
 
 int main() {
 	Group *groups;
+	int group_count;
 	Entry *entries;
+	int entry_count;
 
 	db_init();
-	groups = db_load_groups();
-	entries = db_load_entries();
+	groups = db_load_groups(&group_count);
 
-	tui_init();
+	for(int i = 0; i < group_count; ++i) {
+		fprintf(stderr, "group %d:\n", i+1);
+		fprintf(stderr, "\t  ID: %d\n", group_get_id(&(groups[i])));
+		fprintf(stderr, "\tName: %s\n", group_get_name(&(groups[i])));
+		fprintf(stderr, "\tDesc: %s\n", group_get_desc(&(groups[i])));
+		fprintf(stderr, "\t Url: %s\n", group_get_url(&(groups[i])));
+	}
+
+	entries = db_load_entries(&entry_count);
+
+	if(groups == NULL) perror("could not get groups");
+	if(entries == NULL) perror("could not get entries");
+
+	tui_init(&groups, &entries);
 
 	return 0;
 }

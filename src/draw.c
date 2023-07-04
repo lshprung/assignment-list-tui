@@ -1,9 +1,10 @@
 #include <curses.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #include "draw.h"
 
-void tui_init() {
+void tui_init(Group **groups, Entry **entries) {
 	int input; // capture user input
 	WINDOW *w_main;
 	
@@ -22,8 +23,14 @@ void tui_init() {
 	refresh();
 	wrefresh(w_main);
 
+	// draw groups and entries
+	fprintf(stderr, "groups: %d\n", sizeof(*groups) / sizeof(Group));
+	fprintf(stderr, "entries: %d\n", sizeof(*entries) / sizeof(Entry));
+
 	input = getch();
 	tui_end();
+	free(*groups);
+	free(*entries);
 }
 
 void tui_end() {

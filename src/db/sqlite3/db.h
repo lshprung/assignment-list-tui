@@ -13,8 +13,8 @@
 
 int db_init();
 
-Group *db_load_groups();
+Group *db_load_groups(int *group_count);
 
-Entry *db_load_entries();
+Entry *db_load_entries(int *entry_count);
 
 #endif

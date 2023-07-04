@@ -18,6 +18,7 @@ int create_tables(const char *path);
 int group_count_callback(void *first_arg, int argc, char **argv, char **azColName);
 int entry_count_callback(void *first_arg, int argc, char **argv, char **azColName);
 int load_groups_callback(void *first_arg, int argc, char **argv, char **azColName);
+int load_entries_callback(void *first_arg, int argc, char **argv, char **azColName);
 
 // globals
 static int callback_index; // keep track of index when filling arrays using callback functions
@@ -41,7 +42,7 @@ int db_init() {
 	return 0;
 }
 
-Group *db_load_groups() {
+Group *db_load_groups(int *group_count) {
 	Group *output;
 	sqlite3 *db;
 	const char *count_query = "SELECT COUNT(*) FROM 'Group'";
@@ -72,12 +73,13 @@ Group *db_load_groups() {
 		sqlite3_free(zErrMsg);
 		return NULL;
 	}
+	*group_count = callback_index;
 
 	sqlite3_close(db);
 	return output;
 }
 
-Entry *db_load_entries() {
+Entry *db_load_entries(int *entry_count) {
 	Entry *output;
 	sqlite3 *db;
 	const char *count_query = "SELECT COUNT(*) FROM 'Entry'";
@@ -102,12 +104,13 @@ Entry *db_load_entries() {
 
 	// do select query
 	callback_index = 0;
-	res = sqlite3_exec(db, query, load_groups_callback, &output, &zErrMsg);
+	res = sqlite3_exec(db, query, load_entries_callback, &output, &zErrMsg);
 	if(res != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return NULL;
 	}
+	*entry_count = callback_index;
 
 	sqlite3_close(db);
 	return output;
@@ -193,7 +196,29 @@ int load_groups_callback(void *first_arg, int argc, char **argv, char **azColNam
 	group_set_name(&((*groups)[callback_index]), (argv[1] ? argv[1] : ""));
 	group_set_desc(&((*groups)[callback_index]), (argv[2] ? argv[2] : ""));
 	group_set_url(&((*groups)[callback_index]), (argv[3] ? argv[3] : ""));
-	printf("%d\n", argc);
+
+	++callback_index;
+	return 0;
+}
+
+int load_entries_callback(void *first_arg, int argc, char **argv, char **azColName) {
+	Entry **entries = (Entry **) first_arg;
+
+	// check that enough arguments were passed
+	if(argc < 7) {
+		fprintf(stderr, "Error: not enough rows returned in 'Entry' table\n");
+		return 1;
+	}
+
+	entry_set_id(&((*entries)[callback_index]), (argv[0] ? atoi(argv[0]) : 0));
+	fprintf(stderr, "time format: %s\n", (argv[1] ? argv[1] : ""));
+	//entry_set_due_date(&((*entries)[callback_index]), (argv[1] ? argv[1] : "")); // TODO
+	entry_set_alt_due_date(&((*entries)[callback_index]), (argv[2] ? argv[2] : ""));
+	entry_set_title(&((*entries)[callback_index]), (argv[3] ? argv[3] : ""));
+	entry_set_color(&((*entries)[callback_index]), (argv[4] ? argv[4] : ""));
+	entry_set_highlight(&((*entries)[callback_index]), (argv[5] ? argv[5] : ""));
+	entry_set_done(&((*entries)[callback_index]), (argv[6] ? argv[6] : false));
+	entry_set_url(&((*entries)[callback_index]), (argv[7] ? argv[7] : ""));
 
 	++callback_index;
 	return 0;
