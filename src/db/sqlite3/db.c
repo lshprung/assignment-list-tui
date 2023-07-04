@@ -1,5 +1,6 @@
 #include <asm-generic/errno-base.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sqlite3.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -12,6 +13,13 @@
 	 1 -> failure
 */
 int create_tables(const char *path);
+
+// callback function prototypes
+int count_callback(void *first_arg, int argc, char **argv, char **azColName);
+int load_groups_callback(void *first_arg, int argc, char **argv, char **azColName);
+
+// globals
+static int callback_index; // keep track of index when filling arrays using callback functions
 
 int db_init() {
 	int res;
@@ -33,12 +41,47 @@ int db_init() {
 }
 
 Group *db_load_groups() {
-	// TODO
+	Group *output;
+	sqlite3 *db;
+	const char *count_query = "SELECT COUNT(*) FROM 'Group'";
+	const char *query = "SELECT ROWID, * FROM 'Group'";
+	char *zErrMsg = NULL; // hold error from sqlite3_exec
+	int res;
+
+	res = sqlite3_open(USER_DATA_PATH, &db);
+	if(res) {
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return NULL;
+	}
+	
+	// count rows in table
+	res = sqlite3_exec(db, count_query, count_callback, &output, &zErrMsg);
+	if(res != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return NULL;
+	}
+
+	// do select query
+	callback_index = 0;
+	res = sqlite3_exec(db, query, load_groups_callback, &output, &zErrMsg);
+	if(res != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return NULL;
+	}
+
+	sqlite3_close(db);
+	return output;
 }
 
 Entry *db_load_entries() {
 	// TODO
+	return NULL;
 }
+
+
 
 int create_tables(const char *path) {
 	sqlite3 *db;
@@ -49,9 +92,9 @@ int create_tables(const char *path) {
 	int i;
 
 	// Group table - stores groups of entries
+	// note: in sqlite, use rowid, don't create id column
 	sprintf(queries[0], 
 			"CREATE TABLE IF NOT EXISTS 'Group' ("
-			"'ID' int NOT NULL PRIMARY KEY, "
 			"'Name' varchar(%d) NOT NULL, "
 			"'Desc' varchar(%d) DEFAULT NULL, "
 			"'Url' varchar(%d) DEFAULT NULL);",
@@ -60,7 +103,6 @@ int create_tables(const char *path) {
 	// Entry table - stores individual entries
 	sprintf(queries[1],
 			"CREATE TABLE IF NOT EXISTS 'Entry' ("
-			"'ID' int NOT NULL PRIMARY KEY, "
 			"'Group_ID' int NOT NULL, " // FIXME might want foreign key constraint
 			"'Due_date' date DEFAULT NULL, "
 			"'Alt_due_date' varchar(%d) DEFAULT NULL, "
@@ -88,5 +130,33 @@ int create_tables(const char *path) {
 
 	// wrap-up
 	sqlite3_close(db);
+	return 0;
+}
+
+// callback functions
+int count_callback(void *first_arg, int argc, char **argv, char **azColName) {
+	printf("count: %d\n", argc);
+	Group **groups = (Group **) first_arg;
+	*groups = malloc(sizeof(Group) * argc);
+
+	return 0;
+}
+
+int load_groups_callback(void *first_arg, int argc, char **argv, char **azColName) {
+	Group **groups = (Group **) first_arg;
+
+	// check that enough arguments were passed
+	if(argc < 4) {
+		fprintf(stderr, "Error: not enough rows returned in 'Group' table\n");
+		return 1;
+	}
+
+	group_set_id(&((*groups)[callback_index]), (argv[0] ? atoi(argv[0]) : 0));
+	group_set_name(&((*groups)[callback_index]), (argv[1] ? argv[1] : ""));
+	group_set_desc(&((*groups)[callback_index]), (argv[2] ? argv[2] : ""));
+	group_set_url(&((*groups)[callback_index]), (argv[3] ? argv[3] : ""));
+	printf("%d\n", argc);
+
+	++callback_index;
 	return 0;
 }
