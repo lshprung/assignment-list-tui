@@ -5,7 +5,7 @@
 #include "group.h"
 
 // initialize the tui
-void tui_init(Group **groups, Entry **entries);
+void tui_init(Group **groups, int g_count, Entry **entries, int e_count);
 
 // destroy the tui
 void tui_end();

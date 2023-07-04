@@ -7,6 +7,10 @@ int entry_get_id(Entry *e) {
 	return e->id;
 }
 
+int entry_get_group_id(Entry *e) {
+	return e->group_id;
+}
+
 struct tm entry_get_due_date(Entry *e) {
 	return e->due_date;
 }
@@ -39,6 +43,10 @@ char *entry_get_url(Entry *e) {
 // setters
 void entry_set_id(Entry *e, int id) {
 	e->id = id;
+}
+
+void entry_set_group_id(Entry *e, int id) {
+	e->group_id = id;
 }
 
 void entry_set_due_date(Entry *e, struct tm due_date) {

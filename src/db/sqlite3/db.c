@@ -205,20 +205,21 @@ int load_entries_callback(void *first_arg, int argc, char **argv, char **azColNa
 	Entry **entries = (Entry **) first_arg;
 
 	// check that enough arguments were passed
-	if(argc < 7) {
+	if(argc < 8) {
 		fprintf(stderr, "Error: not enough rows returned in 'Entry' table\n");
 		return 1;
 	}
 
 	entry_set_id(&((*entries)[callback_index]), (argv[0] ? atoi(argv[0]) : 0));
-	fprintf(stderr, "time format: %s\n", (argv[1] ? argv[1] : ""));
+	entry_set_id(&((*entries)[callback_index]), (argv[1] ? atoi(argv[1]) : 0));
+	fprintf(stderr, "time format: %s\n", (argv[2] ? argv[2] : ""));
 	//entry_set_due_date(&((*entries)[callback_index]), (argv[1] ? argv[1] : "")); // TODO
-	entry_set_alt_due_date(&((*entries)[callback_index]), (argv[2] ? argv[2] : ""));
-	entry_set_title(&((*entries)[callback_index]), (argv[3] ? argv[3] : ""));
-	entry_set_color(&((*entries)[callback_index]), (argv[4] ? argv[4] : ""));
-	entry_set_highlight(&((*entries)[callback_index]), (argv[5] ? argv[5] : ""));
-	entry_set_done(&((*entries)[callback_index]), (argv[6] ? argv[6] : false));
-	entry_set_url(&((*entries)[callback_index]), (argv[7] ? argv[7] : ""));
+	entry_set_alt_due_date(&((*entries)[callback_index]), (argv[3] ? argv[3] : ""));
+	entry_set_title(&((*entries)[callback_index]), (argv[4] ? argv[4] : ""));
+	entry_set_color(&((*entries)[callback_index]), (argv[5] ? argv[5] : ""));
+	entry_set_highlight(&((*entries)[callback_index]), (argv[6] ? argv[6] : ""));
+	entry_set_done(&((*entries)[callback_index]), (argv[7] ? argv[7] : false));
+	entry_set_url(&((*entries)[callback_index]), (argv[8] ? argv[8] : ""));
 
 	++callback_index;
 	return 0;
