@@ -45,7 +45,7 @@ int main() {
 	if(groups == NULL) perror("could not get groups");
 	if(entries == NULL) perror("could not get entries");
 
-	//tui_init(&groups, group_count, &entries, entry_count);
+	tui_init(&groups, group_count, &entries, entry_count);
 
 	return 0;
 }
