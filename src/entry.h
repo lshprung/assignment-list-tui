@@ -11,6 +11,7 @@ typedef struct {
 	int id; // id from database
 	int group_id; // id of corresponding group
 	struct tm due_date;
+	bool due_date_set;
 	char alt_due_date[BUF_LEN];
 	char title[BUF_LEN];
 	char color[BUF_LEN]; // TODO consider making an enum
@@ -22,7 +23,7 @@ typedef struct {
 // getters
 int entry_get_id(Entry *e);
 int entry_get_group_id(Entry *e);
-struct tm entry_get_due_date(Entry *e);
+struct tm *entry_get_due_date(Entry *e);
 char *entry_get_alt_due_date(Entry *e);
 char *entry_get_title(Entry *e);
 char *entry_get_color(Entry *e);
@@ -33,7 +34,7 @@ char *entry_get_url(Entry *e);
 // setters
 void entry_set_id(Entry *e, int id);
 void entry_set_group_id(Entry *e, int id);
-void entry_set_due_date(Entry *e, struct tm due_date);
+void entry_set_due_date(Entry *e, struct tm *due_date);
 void entry_set_alt_due_date(Entry *e, char *alt_due_date);
 void entry_set_title(Entry *e, char *title);
 void entry_set_color(Entry *e, char *color);

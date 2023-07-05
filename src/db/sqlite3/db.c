@@ -1,6 +1,7 @@
 #include <asm-generic/errno-base.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sqlite3.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -171,14 +172,14 @@ int create_tables(const char *path) {
 // callback functions
 int group_count_callback(void *first_arg, int argc, char **argv, char **azColName) {
 	Group **groups = (Group **) first_arg;
-	*groups = malloc(sizeof(Group) * atoi(argv[0]));
+	*groups = calloc(atoi(argv[0]), sizeof(Group));
 
 	return 0;
 }
 
 int entry_count_callback(void *first_arg, int argc, char **argv, char **azColName) {
 	Entry **entries = (Entry **) first_arg;
-	*entries = malloc(sizeof(Entry) * atoi(argv[0]));
+	*entries = calloc(atoi(argv[0]), sizeof(Entry));
 
 	return 0;
 }
@@ -203,6 +204,7 @@ int load_groups_callback(void *first_arg, int argc, char **argv, char **azColNam
 
 int load_entries_callback(void *first_arg, int argc, char **argv, char **azColName) {
 	Entry **entries = (Entry **) first_arg;
+	struct tm due_date = {0};
 
 	// check that enough arguments were passed
 	if(argc < 8) {
@@ -211,9 +213,14 @@ int load_entries_callback(void *first_arg, int argc, char **argv, char **azColNa
 	}
 
 	entry_set_id(&((*entries)[callback_index]), (argv[0] ? atoi(argv[0]) : 0));
-	entry_set_id(&((*entries)[callback_index]), (argv[1] ? atoi(argv[1]) : 0));
-	fprintf(stderr, "time format: %s\n", (argv[2] ? argv[2] : ""));
-	//entry_set_due_date(&((*entries)[callback_index]), (argv[1] ? argv[1] : "")); // TODO
+	entry_set_group_id(&((*entries)[callback_index]), (argv[1] ? atoi(argv[1]) : 0));
+	if(argv[2] && strlen(argv[2])) {
+		strptime(argv[2], "%F", &due_date);
+		printf("DEBUG: %s\n", argv[2]);
+		printf("DEBUG: %d\n", due_date.tm_year);
+		entry_set_due_date(&((*entries)[callback_index]), &due_date);
+	}
+	else entry_set_due_date(&((*entries)[callback_index]), NULL);
 	entry_set_alt_due_date(&((*entries)[callback_index]), (argv[3] ? argv[3] : ""));
 	entry_set_title(&((*entries)[callback_index]), (argv[4] ? argv[4] : ""));
 	entry_set_color(&((*entries)[callback_index]), (argv[5] ? argv[5] : ""));

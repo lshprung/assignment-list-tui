@@ -11,8 +11,9 @@ int entry_get_group_id(Entry *e) {
 	return e->group_id;
 }
 
-struct tm entry_get_due_date(Entry *e) {
-	return e->due_date;
+struct tm *entry_get_due_date(Entry *e) {
+	if(e->due_date_set) return &e->due_date;
+	return NULL;
 }
 
 char *entry_get_alt_due_date(Entry *e) {
@@ -49,8 +50,15 @@ void entry_set_group_id(Entry *e, int id) {
 	e->group_id = id;
 }
 
-void entry_set_due_date(Entry *e, struct tm due_date) {
-	e->due_date = due_date;
+void entry_set_due_date(Entry *e, struct tm *due_date) {
+	if(due_date != NULL) {
+		e->due_date = *due_date;
+		e->due_date_set = true;
+	}
+	else {
+		e->due_date = (struct tm){0};
+		e->due_date_set = false;
+	}
 }
 
 void entry_set_alt_due_date(Entry *e, char *alt_due_date) {
