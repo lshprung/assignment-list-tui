@@ -27,6 +27,9 @@ void hover_move(WINDOW *w, int new_hover_index);
 // handle feedback loop
 void feedback_loop();
 
+// create windows for options
+void draw_options();
+
 
 void tui_init(Group **groups, int g_count, Entry **entries, int e_count) {
 	int input; // capture user input
@@ -163,6 +166,56 @@ void feedback_loop() {
 				hover_move(w_main, hover_index+1);
 				wrefresh(w_main);
 				break;
+
+			// Enter key
+			case 10:
+				draw_options();
+				break;
+
+			// debug
+				/*
+			default:
+				wprintw(w_main, "%d", input);
+				wrefresh(w_main);
+				*/
 		}
 	}
+}
+
+void draw_options() {
+	WINDOW *w_options;
+	int height; // height of w_options depends on whether it's a group or entry
+
+	if(tui_text_get_type(&(main_text[hover_index])) == GROUP) height = 5;
+	else height = 6;
+	w_options = newwin(height, 0, 
+			tui_text_get_y(&(main_text[hover_index]))+1,
+			tui_text_get_x(&(main_text[hover_index])));
+	box(w_options, 0, 0);
+	refresh();
+
+	// TODO create data structure that maps each of these to a function
+	// TODO reuse code for hovering
+	// TODO allow for toggling window location (if there is room)
+	if(tui_text_get_type(&(main_text[hover_index])) == GROUP) {
+		mvwprintw(w_options, 1, 1, "add assignment");
+		mvwprintw(w_options, 2, 1, "edit");
+		mvwprintw(w_options, 3, 1, "delete");
+	}
+	else {
+		mvwprintw(w_options, 1, 1, "edit");
+		mvwprintw(w_options, 2, 1, "clone");
+		mvwprintw(w_options, 3, 1, "mark as done");
+		mvwprintw(w_options, 4, 1, "delete");
+	}
+
+	wrefresh(w_options);
+
+	// TODO feedback_loop should reuse code
+	int input = getch();
+
+	// clean options window
+	delwin(w_options);
+	touchwin(w_main);
+	wrefresh(w_main);
 }
