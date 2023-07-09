@@ -24,6 +24,8 @@ AC_CHECK_HEADERS([unistd.h])
 AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([memset])
 #AC_CHECK_FUNCS([mkdir])
 
 # Setting default buffer size
